@@ -9,38 +9,46 @@ using System.Collections.Generic;
 
 public class AuthCharPredictor : MonoBehaviour, IAuthCharStateHandler
 {
-    Queue<Vector2> pendingMoves;
+    List<CharacterState> states;
     AuthoritativeCharacter character;
     CharacterState predictedState;
+    private int lastProcessedInput;
 
     void Awake()
     {
-        pendingMoves = new Queue<Vector2>();
+        states = new List<CharacterState>();
         character = GetComponent<AuthoritativeCharacter>();
-        UpdatePredictedState();
+        predictedState = character.state;
     }
 
     public void AddInput(Vector2 input)
     {
-        pendingMoves.Enqueue(input);
-        UpdatePredictedState();
+        predictedState = CharacterState.Move(predictedState, input, character.Speed, 0);
+        states.Add(predictedState);
+        character.SyncState(predictedState);
     }
 
     public void OnStateChange(CharacterState newState)
     {
-        var n = predictedState.moveNum - character.state.moveNum;
-        while (n >= 0 && pendingMoves.Count > n)
-            pendingMoves.Dequeue();
-        if (newState.moveNum == predictedState.moveNum)
-            predictedState = newState;
+        if (states.Count > 0)
+        {
+            while (
+                states.Count > 0 &&
+                states[0].moveNum <= newState.moveNum)
+            {
+                states.RemoveAt(0);
+            }
+        }
+        predictedState = newState;           
         UpdatePredictedState();
     }
 
     void UpdatePredictedState()
     {
-        predictedState = character.state;
-        foreach (Vector2 input in pendingMoves)
-            predictedState = CharacterState.Move(predictedState, input, character.Speed, 0);
+        foreach (CharacterState state in states)
+        {
+            predictedState = CharacterState.Move(predictedState, state.input, character.Speed, 0);
+        }
         character.SyncState(predictedState);
     }
 }

@@ -31,10 +31,10 @@ public class AuthCharServer : MonoBehaviour
         if (movesMade == 0)
         {
             CharacterState state = character.state;
-            while ((movesMade < character.InputBufferSize && inputBuffer.Count > 0))
+            while (movesMade < character.InputBufferSize && inputBuffer.Count > 0)
             {
                 state = CharacterState.Move(state, inputBuffer.Dequeue(), character.Speed, serverTick);
-                charCtrl.Move(state.velocity);
+                charCtrl.Move(state.position - charCtrl.transform.position);
                 movesMade++;
             }
             if (movesMade > 0)

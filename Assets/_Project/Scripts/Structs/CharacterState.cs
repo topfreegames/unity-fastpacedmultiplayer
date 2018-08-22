@@ -14,6 +14,7 @@ public struct CharacterState
     public Vector3 eulerAngles;
     public Vector3 velocity;
     public Vector3 angularVelocity;
+    public Vector2 input;
     public int moveNum;
     public int timestamp;
     
@@ -66,7 +67,8 @@ public struct CharacterState
             position = speed * Time.fixedDeltaTime * new Vector3(input.x, 0, input.y) + previous.position,
             eulerAngles = previous.eulerAngles,
             moveNum = previous.moveNum + 1,
-            timestamp = timestamp
+            timestamp = timestamp,
+            input = input
         };
         var timestepInterval = timestamp - previous.timestamp + 1;
         state.velocity = (state.position - previous.position) / timestepInterval;
