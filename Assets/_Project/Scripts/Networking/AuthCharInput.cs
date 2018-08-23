@@ -52,12 +52,15 @@ public class AuthCharInput : MonoBehaviour
 
     Vector2 SimulatedVector()
     {
-        if (transform.position.x > 5)
-            simVector.x = Random.Range(-1f, 0);
-        else if (transform.position.x < -5)
-            simVector.x = Random.Range(0, 1f);
-        if (transform.position.z > 2 || transform.position.z < -2)
-            simVector.y = 0;
+        if (transform.position.x > 17)
+            simVector.x = Random.Range(-2f, 1f);
+        else if (transform.position.x < -17)
+            simVector.x = Random.Range(1f, 2f);
+
+        if (transform.position.z > 17)
+            simVector.y = Random.Range(-2f, -1f);
+        else if (transform.position.z < -17)
+            simVector.y = Random.Range(1f, 2f);
         return simVector;
     }
 }
